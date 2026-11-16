@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17201c">
+<meta name="description" content="Trace the Tor network over time. Compare estimated users, bridges, relays and onion-service traffic from The Tor Project's public measurements.">
+<title>Onion Pulse · CoolCode.ca</title>
+<link rel="stylesheet" href="./style.css">
+<script src="./app.js" defer></script>
+</head>
+<body>
+<header class="dark">
+  <nav class="wrap nav" aria-label="Main"><a class="brand" href="https://coolcode.ca/"><span aria-hidden="true">[✓]</span> CoolCode.ca</a><a href="#sources">About the data ↓</a></nav>
+  <div class="wrap hero">
+    <div>
+      <p class="eyebrow">The Tor network over time</p>
+      <h1>Onion Pulse<span>.</span></h1>
+      <p class="intro">Follow the anonymous internet through public measurements. Compare connection estimates, traffic, and changes in the network during documented events.</p>
+    </div>
+    <aside class="pulse" aria-label="Latest worldwide estimates">
+      <h2>Worldwide snapshot</h2>
+      <dl>
+        <div><dt>Estimated relay users</dt><dd id="global-relay">—</dd></div>
+        <div><dt>Estimated bridge users</dt><dd id="global-bridge">—</dd></div>
+        <div><dt>Running relays</dt><dd id="global-relays">—</dd></div>
+      </dl>
+      <p id="snapshot-date">Loading Tor Metrics snapshot…</p>
+    </aside>
+  </div>
+</header>
+<main class="wrap">
+  <section aria-labelledby="explore-title" class="explore">
+    <div class="section-head"><h2 id="explore-title">Explore the network</h2><button type="button" id="download" class="secondary" disabled>Download CSV ↓</button></div>
+    <div class="settings">
+      <label>Metric
+        <select id="metric" disabled>
+          <option value="relay">Estimated relay users</option>
+          <option value="bridge">Estimated bridge users</option>
+          <option value="size">Running relays and bridges</option>
+          <option value="bandwidth">Relay bandwidth</option>
+          <option value="addresses">Estimated v3 onion addresses</option>
+          <option value="traffic">Estimated v3 onion-service traffic</option>
+        </select>
+      </label>
+      <label id="country-control">Country or territory<select id="country" disabled></select></label>
+      <label id="compare-control">Compare with<select id="compare" disabled></select></label>
+      <label>From<input id="from" type="date" disabled></label>
+      <label>Through<input id="to" type="date" disabled></label>
+    </div>
+    <div class="periods" aria-label="Date range">
+      <button type="button" data-days="30" disabled>30 days</button>
+      <button type="button" data-days="180" disabled>6 months</button>
+      <button type="button" data-days="365" disabled>1 year</button>
+      <button type="button" data-days="0" disabled>All dates</button>
+    </div>
+    <div class="chart" id="chart">
+      <p id="status" role="status">Loading daily measurements…</p>
+      <button type="button" id="retry" hidden class="secondary">Retry loading</button>
+      <div id="plot" hidden>
+        <div class="chart-head"><h3 id="chart-title"></h3><a id="chart-source">Tor Metrics ↗</a></div>
+        <p class="description" id="description"></p>
+        <svg id="graph" viewBox="0 0 800 320" aria-hidden="true"></svg>
+        <div id="legend" class="legend"></div>
+        <div class="inspector"><label for="scrub">Inspect date <strong id="inspect-date"></strong></label><input type="range" id="scrub" min="0" max="0" value="0"><div id="inspect-values" aria-live="polite"></div></div>
+      </div>
+    </div>
+  </section>
+  <section aria-labelledby="events-title" class="events">
+    <div class="section-head"><h2 id="events-title">Dates worth exploring</h2><a href="https://metrics.torproject.org/news.html">Tor Metrics timeline ↗</a></div>
+    <p>Events documented by The Tor Project provide context for changes in these series. Several events can overlap in time.</p>
+    <div class="cards">
+      <article><time datetime="2025-04-28">April 28, 2025 · Turkmenistan</time><h3>Bridge usage jumps</h3><p>Tor Metrics recorded a sustained increase in bridge clients, especially through Snowflake.</p><button type="button" data-event="tm" disabled>Inspect bridge estimates →</button><a href="https://metrics.torproject.org/news.html#2025">Source ↗</a></article>
+      <article><time datetime="2024-11-06">November 6–21, 2024 · Russia</time><h3>Snowflake connections blocked</h3><p>The Tor Project documented blocking of Snowflake’s DTLS connections in Russia during this window.</p><button type="button" data-event="ru" disabled>Inspect bridge estimates →</button><a href="https://metrics.torproject.org/news.html#2024">Source ↗</a></article>
+      <article><time datetime="2021-02-15">February 15–April 27, 2021 · Myanmar</time><h3>Nightly fixed-line shutdowns</h3><p>The Tor Metrics timeline records nightly internet shutdowns in Myanmar over this period.</p><button type="button" data-event="mm" disabled>Inspect relay estimates →</button><a href="https://metrics.torproject.org/news.html#2021">Source ↗</a></article>
+    </div>
+  </section>
+  <section class="sources" id="sources" aria-labelledby="sources-title">
+    <h2 id="sources-title">How to read the data</h2>
+    <p>Tor estimates clients from aggregate directory requests. These series show national and worldwide activity. The counts can change with measurement coverage, routing, or client behaviour. Country and territory labels follow geographic codes supplied by Tor Metrics.</p>
+    <p>The charts show daily values beginning in 2021. Gaps indicate days without a reported value. Recent days can be revised as data arrives. The dates are in UTC.</p>
+    <a href="https://metrics.torproject.org/stats.html">Original data downloads and CSV documentation ↗</a><br>
+    <a href="https://metrics.torproject.org/reproducible-metrics.html">Measurement methodology ↗</a>
+  </section>
+</main>
+<footer class="dark"><div class="wrap foot"><a href="https://coolcode.ca/">CoolCode.ca</a><p>Data by <a href="https://metrics.torproject.org/">The Tor Project</a>, published under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</p><a href="https://github.com/jsdyer/onionpulse">Source ↗</a></div></footer>
+</body>
+</html>
