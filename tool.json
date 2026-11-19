@@ -1,0 +1,37 @@
+{
+  "id": "onionpulse",
+  "title": "Onion Pulse",
+  "description": "Explore changes in Tor use and compare spikes with documented network events.",
+  "category": "liminal-tools",
+  "tags": [
+    "tor",
+    "privacy",
+    "darknet",
+    "infrastructure"
+  ],
+  "icon": "layers",
+  "url": "/onionpulse/",
+  "source": "https://github.com/jsdyer/onionpulse",
+  "hosting": "project",
+  "access": "browser",
+  "data_info": {
+    "mode": "snapshot",
+    "detail": "Tor estimates clients from directory requests. Event notes and daily values help explain unusual counts.",
+    "cadence": "Daily",
+    "probes": [
+      {
+        "url": "https://coolcode.ca/onionpulse/data/snapshot.json",
+        "path": [
+          "refreshed"
+        ],
+        "label": "Snapshot generated",
+        "count_at": {
+          "path": [
+            "days"
+          ],
+          "unit": "calendar days"
+        }
+      }
+    ]
+  }
+}
