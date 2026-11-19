@@ -24,7 +24,13 @@ const metrics = {
   traffic: { title: "Estimated v3 onion-service traffic", unit: "Gbit/s", file: "hidserv-rend-v3-relayed-cells", series: [["traffic", "v3 onion-service traffic"]],
     detail: "Estimated aggregate bandwidth carried by rendezvous circuits serving v3 onion services." },
 };
+const countingEvent = {
+  metric: "relay", from: "2026-10-20", to: "2026-11-10",
+  start: "2026-10-28", end: "2026-11-06", focus: "2026-10-29",
+  label: "Directory-request counting anomaly",
+};
 const events = {
+  ca: countingEvent,
   tm: { metric: "bridge", from: "2025-03-01", to: "2025-06-15", start: "2025-04-28", label: "Rise in bridge usage" },
   ru: { metric: "bridge", from: "2024-10-06", to: "2024-12-21", start: "2024-11-06", end: "2024-11-21", label: "Snowflake blocking" },
   mm: { metric: "relay", from: "2021-01-15", to: "2021-05-27", start: "2021-02-15", end: "2021-04-27", label: "Nightly shutdowns" },
@@ -222,13 +228,28 @@ async function render() {
       showStatus("Tor Metrics reports no values for this range. Try a wider range or another metric.");
       return;
     }
-    const event = metric.local ? [country, compare].map(code => events[code]).find(mark => mark?.metric === selected
-      && indexAt(mark.start) <= to && indexAt(mark.end || mark.start) >= from) : undefined;
+    const overlaps = mark => mark && indexAt(mark.start) <= to && indexAt(mark.end || mark.start) >= from;
+    const anomalous = metric.local && overlaps(countingEvent);
+    const localEvent = [country, compare].map(code => events[code]).find(mark => mark?.metric === selected && overlaps(mark));
+    const event = anomalous ? countingEvent : metric.local ? localEvent : undefined;
+    $("counting-note").hidden = !anomalous;
+    const summaries = visible.map(line => {
+      const valid = line.points.filter(Number.isFinite).sort((a, b) => a - b);
+      if (!valid.length) return line.label + " has no reported values in this view.";
+      const mid = Math.floor(valid.length / 2);
+      const median = valid.length % 2 ? valid[mid] : (valid[mid - 1] + valid[mid]) / 2;
+      const peak = valid.at(-1);
+      const peakDate = dateAt(from + line.points.indexOf(peak));
+      return line.label + " peaked at " + numberText(peak) + " on " + peakDate + " UTC. The median was " +
+        numberText(median) + " across " + format.format(valid.length) + " reported days.";
+    });
+    $("range-summary").textContent = summaries.join(" ");
     const source = new URL(`${metric.file}.html`, base);
     source.searchParams.set("start", dateAt(from));
     source.searchParams.set("end", dateAt(to));
     if (metric.local) source.searchParams.set("country", country === "world" ? "all" : country);
     $("chart-title").textContent = metric.title;
+    if (metric.local && compare && compare !== country) source.searchParams.append("country", compare === "world" ? "all" : compare);
     $("chart-source").href = source.href;
     $("description").textContent = metric.detail;
     $("status").hidden = true;
@@ -362,7 +383,7 @@ for (const button of eventButtons) button.addEventListener("click", () => {
   $("compare").value = "";
   $("from").value = event.from;
   $("to").value = event.to;
-  focusIndex = indexAt(event.start);
+  focusIndex = indexAt(event.focus || event.start);
   render();
   $("explore-title").scrollIntoView();
   $("metric").focus({ preventScroll: true });
