@@ -60,6 +60,12 @@
       <div id="plot" hidden>
         <div class="chart-head"><h3 id="chart-title"></h3><a id="chart-source">Tor Metrics ↗</a></div>
         <p class="description" id="description"></p>
+        <p id="range-summary" class="range-summary"></p>
+        <aside id="counting-note" hidden aria-label="Measurement anomaly">
+          <strong>Why the estimate spiked in late October 2026</strong>
+          <p>After an October 28 directory change, older Tor clients repeatedly requested network information. Tor uses request counts to estimate clients, so the retries inflated the estimates across countries. Tor released a mitigation on November 4. The shaded dates show the rise and return in the Canadian series.</p>
+          <a href="https://forum.torproject.org/t/snowflake-daily-operations-october-2026-update/22421">Tor operator’s explanation</a> · <a href="https://forum.torproject.org/t/tor-relays-re-does-the-begin-dir-attack-affect-user-count-metrics/22366">Relay investigation</a> · <a href="https://metrics.torproject.org/userstats-relay-country.csv?start=2026-10-20&amp;end=2026-11-10&amp;country=ca">Canadian source rows (CSV)</a>
+        </aside>
         <svg id="graph" viewBox="0 0 800 320" aria-hidden="true"></svg>
         <div id="legend" class="legend"></div>
         <div class="inspector"><label for="scrub">Inspect date <strong id="inspect-date"></strong></label><input type="range" id="scrub" min="0" max="0" value="0"><div id="inspect-values" aria-live="polite"></div></div>
@@ -70,6 +76,7 @@
     <div class="section-head"><h2 id="events-title">Dates worth exploring</h2><a href="https://metrics.torproject.org/news.html">Tor Metrics timeline ↗</a></div>
     <p>Events documented by The Tor Project provide context for changes in these series. Several events can overlap in time.</p>
     <div class="cards">
+      <article><time datetime="2026-10-29">October 29, 2026 · Canada</time><h3>Why two million clients appeared in one day</h3><p>Tor estimated 72,078 direct clients on October 27, 2,070,762 on October 29 and 71,704 on November 6. A client retry bug inflated the network-wide estimate.</p><button type="button" data-event="ca" disabled>Inspect the Canadian peak →</button><a href="https://forum.torproject.org/t/snowflake-daily-operations-october-2026-update/22421">Operator’s report ↗</a></article>
       <article><time datetime="2025-04-28">April 28, 2025 · Turkmenistan</time><h3>Bridge usage jumps</h3><p>Tor Metrics recorded a sustained increase in bridge clients, especially through Snowflake.</p><button type="button" data-event="tm" disabled>Inspect bridge estimates →</button><a href="https://metrics.torproject.org/news.html#2025">Source ↗</a></article>
       <article><time datetime="2024-11-06">November 6–21, 2024 · Russia</time><h3>Snowflake connections blocked</h3><p>The Tor Project documented blocking of Snowflake’s DTLS connections in Russia during this window.</p><button type="button" data-event="ru" disabled>Inspect bridge estimates →</button><a href="https://metrics.torproject.org/news.html#2024">Source ↗</a></article>
       <article><time datetime="2021-02-15">February 15–April 27, 2021 · Myanmar</time><h3>Nightly fixed-line shutdowns</h3><p>The Tor Metrics timeline records nightly internet shutdowns in Myanmar over this period.</p><button type="button" data-event="mm" disabled>Inspect relay estimates →</button><a href="https://metrics.torproject.org/news.html#2021">Source ↗</a></article>
